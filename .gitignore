@@ -1,0 +1,21 @@
+# Build artifacts
+*.o
+*.elf
+*.img
+*.bin
+*.map
+
+# Assembly / compiler intermediates
+*.tmp
+
+# Build directories
+/build/
+/out/
+/target/
+
+# macOS specific
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
