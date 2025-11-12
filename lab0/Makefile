@@ -16,3 +16,6 @@ kernel8.img: kernel8.elf
 
 clean:
 	rm -f *.o *.elf *.img
+
+run: kernel8.img
+	qemu-system-aarch64 -M raspi3b -kernel kernel8.img -display none -S -s
