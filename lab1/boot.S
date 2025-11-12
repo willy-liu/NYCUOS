@@ -2,7 +2,7 @@
 .global _start
 
 _start:
-    // 1️⃣ 設定 stack pointer (例如放在 0x80000 之上)
+    // 設定 stack pointer
     ldr x0, =_stack_top
     mov sp, x0
 
@@ -18,7 +18,7 @@ bss_clear:
     b bss_clear
 
 bss_done:
-    // 3️⃣ 跳到 C 函式
+    // 跳到 C 函式
     bl main
 
 1:  b 1b               // main 回來就進入無限迴圈

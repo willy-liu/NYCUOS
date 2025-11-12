@@ -1,4 +1,7 @@
 // uart.c
+
+#include "gpio.h"
+
 #define MMIO_BASE        0x3F000000
 #define AUX_BASE         (MMIO_BASE + 0x215000)
 
@@ -21,6 +24,8 @@
 // =====================================================
 
 void mini_uart_init(void) {
+    gpio_init_mini_uart();
+
     *AUX_ENABLES |= 1;          // Enable mini UART
     *AUX_MU_CNTL_REG = 0;       // Disable TX/RX
     *AUX_MU_LCR_REG = 3;        // 8-bit mode
