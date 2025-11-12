@@ -1,5 +1,5 @@
 // uart.c
-
+#include "mini_uart.h"
 #include "gpio.h"
 
 #define MMIO_BASE        0x3F000000
