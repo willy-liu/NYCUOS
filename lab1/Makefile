@@ -13,7 +13,7 @@ LDFLAGS = -T linker.ld
 # =======================
 # Source / Object files
 # =======================
-OBJS = boot.o main.o mini_uart.o gpio.o
+OBJS = boot.o main.o mini_uart.o gpio.o mailbox.o
 
 # =======================
 # Build rules
@@ -33,6 +33,9 @@ mini_uart.o: mini_uart.c mini_uart.h gpio.h
 
 gpio.o: gpio.c gpio.h
 	$(CC) $(CFLAGS) -c gpio.c -o $@
+
+mailbox.o: mailbox.c mailbox.h
+	$(CC) $(CFLAGS) -c mailbox.c -o $@
 
 # 連結
 kernel8.elf: $(OBJS) linker.ld

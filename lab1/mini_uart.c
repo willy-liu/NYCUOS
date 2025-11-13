@@ -52,3 +52,16 @@ void mini_uart_puts(const char *s) {
         mini_uart_send(*s++);
     }
 }
+
+void print_hex(unsigned int value) {
+    mini_uart_puts("0x");
+    for (int i = 28; i >= 0; i -= 4) {
+        unsigned int nibble = (value >> i) & 0xF;
+        char c;
+        if (nibble < 10)
+            c = '0' + nibble;
+        else
+            c = 'A' + (nibble - 10);
+        mini_uart_send(c);
+    }
+}

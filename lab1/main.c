@@ -1,4 +1,5 @@
 #include "mini_uart.h"
+#include "mailbox.h"
 
 #define MAX_CMD_LEN 64
 
@@ -32,9 +33,33 @@ void shell(void) {
                 mini_uart_puts("Available commands:\r\n");
                 mini_uart_puts("  help  : print all available commands\r\n");
                 mini_uart_puts("  hello : print Hello World!\r\n");
+                mini_uart_puts("  info : print system information\r\n");
                 mini_uart_puts("  reboot: reboot the device\r\n");
             } else if (strcmp(buffer, "hello") == 0) {
                 mini_uart_puts("Hello World!\r\n");
+            
+            } else if (strcmp(buffer, "info") == 0) {
+
+                unsigned int mailbox[8] __attribute__((aligned(16)));
+
+                if (get_board_revision(mailbox)) { // 取得板子版本
+                    mini_uart_puts("Board Revision: ");
+                    print_hex(mailbox[5]);
+                    mini_uart_puts("\r\n");
+                } else {
+                    mini_uart_puts("Failed to get board revision.\r\n");
+                }
+
+                if (get_arm_memory_info(mailbox)) { // 取得 ARM memory
+                    mini_uart_puts("ARM Memory Info:\r\n");
+                    mini_uart_puts("  Base: ");
+                    print_hex(mailbox[5]);
+                    mini_uart_puts("\r\n  Size: ");
+                    print_hex(mailbox[6]);
+                    mini_uart_puts("\r\n");
+                } else {
+                    mini_uart_puts("Failed to get ARM memory info.\r\n");
+                }
             } else {
                 mini_uart_puts("Unknown command: ");
                 mini_uart_puts(buffer);
