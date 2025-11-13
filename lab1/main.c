@@ -1,5 +1,6 @@
 #include "mini_uart.h"
 #include "mailbox.h"
+#include "reboot.h"
 
 #define MAX_CMD_LEN 64
 
@@ -60,6 +61,8 @@ void shell(void) {
                 } else {
                     mini_uart_puts("Failed to get ARM memory info.\r\n");
                 }
+            } else if (strcmp(buffer, "reboot") == 0) {
+                reset(10);  // reboot after 10 ticks
             } else {
                 mini_uart_puts("Unknown command: ");
                 mini_uart_puts(buffer);
