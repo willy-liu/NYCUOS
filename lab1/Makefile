@@ -11,8 +11,8 @@ CFLAGS  = -Wall -O2 -ffreestanding -nostdlib
 CFLAGS += -I ../uart
 LDFLAGS = -T linker.ld
 
-UART_H = ../uart/mini_uart.h
-UART_C = ../uart/mini_uart.c
+MINI_UART_H = ../uart/mini_uart.h
+MINI_UART_C = ../uart/mini_uart.c
 
 GPIO_H = ../uart/gpio.h
 GPIO_C = ../uart/gpio.c
@@ -35,11 +35,11 @@ boot.o: boot.S
 main.o: main.c $(UART_H) $(GPIO_H)
 	$(CC) $(CFLAGS) -c main.c -o $@
 
-mini_uart.o: mini_uart.c $(UART_H) $(GPIO_H)
-	$(CC) $(CFLAGS) -c mini_uart.c -o $@
+mini_uart.o: $(MINI_UART_C) $(MINI_UART_H) $(GPIO_H)
+	$(CC) $(CFLAGS) -c $(MINI_UART_C) -o $@
 
-gpio.o: gpio.c $(GPIO_H)
-	$(CC) $(CFLAGS) -c gpio.c -o $@
+gpio.o: $(GPIO_C) $(GPIO_H)
+	$(CC) $(CFLAGS) -c $(GPIO_C) -o $@
 
 mailbox.o: mailbox.c mailbox.h
 	$(CC) $(CFLAGS) -c mailbox.c -o $@
