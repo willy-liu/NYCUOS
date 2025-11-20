@@ -8,7 +8,14 @@ LD      = $(CROSS)-ld
 OBJCOPY = $(CROSS)-objcopy
 
 CFLAGS  = -Wall -O2 -ffreestanding -nostdlib
+CFLAGS += -I ../uart
 LDFLAGS = -T linker.ld
+
+UART_H = ../uart/mini_uart.h
+UART_C = ../uart/mini_uart.c
+
+GPIO_H = ../uart/gpio.h
+GPIO_C = ../uart/gpio.c
 
 # =======================
 # Source / Object files
@@ -25,13 +32,13 @@ boot.o: boot.S
 	$(CC) $(CFLAGS) -c boot.S -o $@
 
 # C 原始碼
-main.o: main.c mini_uart.h gpio.h
+main.o: main.c $(UART_H) $(GPIO_H)
 	$(CC) $(CFLAGS) -c main.c -o $@
 
-mini_uart.o: mini_uart.c mini_uart.h gpio.h
+mini_uart.o: mini_uart.c $(UART_H) $(GPIO_H)
 	$(CC) $(CFLAGS) -c mini_uart.c -o $@
 
-gpio.o: gpio.c gpio.h
+gpio.o: gpio.c $(GPIO_H)
 	$(CC) $(CFLAGS) -c gpio.c -o $@
 
 mailbox.o: mailbox.c mailbox.h
