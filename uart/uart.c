@@ -48,8 +48,18 @@ int uart_rx_empty(void) {
     return (*UART0_FR & (1 << 4)) != 0;
 }
 
+int uart_tx_busy(void) {
+    return (*UART0_FR & (1 << 3)) != 0;
+}
+
+void uart_flush_rx(void) {
+    while (!uart_rx_empty()) {
+        (void)uart_getc();
+    }
+}
+
 void uart_flush_tx(void) {
-    while (*UART0_FR & (1 << 3)) {
+    while (uart_tx_busy()) {
         // BUSY=1 → still sending
     }
 }

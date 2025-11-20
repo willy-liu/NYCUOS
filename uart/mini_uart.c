@@ -55,8 +55,18 @@ int mini_uart_rx_empty(void) {
     return (*AUX_MU_LSR_REG & 0x01) == 0;
 }
 
+int mini_uart_tx_busy(void) {
+    return (*AUX_MU_LSR_REG & 0x20) == 0;
+}
+
+void mini_uart_flush_rx(void) {
+    while (!mini_uart_rx_empty()) {
+        (void)mini_uart_getc();
+    }
+}
+
 void mini_uart_flush_tx(void) {
-    while (!(*AUX_MU_LSR_REG & 0x20)) {
+    while (mini_uart_tx_busy()) {
         // Wait until TX empty
     }
 }

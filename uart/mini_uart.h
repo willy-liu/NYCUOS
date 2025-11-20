@@ -6,6 +6,8 @@ void mini_uart_send(char c);
 char mini_uart_getc(void);
 void mini_uart_puts(const char *s);
 int mini_uart_rx_empty(void);
+int mini_uart_tx_busy(void);
+void mini_uart_flush_rx(void);
 void mini_uart_flush_tx(void);
 
 void print_hex(unsigned int value);
