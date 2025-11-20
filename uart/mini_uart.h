@@ -8,4 +8,6 @@ void mini_uart_puts(const char *s);
 int mini_uart_rx_empty(void);
 void mini_uart_flush_tx(void);
 
+void print_hex(unsigned int value);
+
 #endif /* _MINI_UART_H_ */

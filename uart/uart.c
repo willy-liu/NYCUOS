@@ -53,3 +53,11 @@ void uart_flush_tx(void) {
         // BUSY=1 → still sending
     }
 }
+
+void print_hex(unsigned int value) {
+    const char hex_chars[] = "0123456789ABCDEF";
+    uart_puts("0x");
+    for (int i = 28; i >= 0; i -= 4) {
+        uart_send(hex_chars[(value >> i) & 0xF]);
+    }
+}

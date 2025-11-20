@@ -48,9 +48,9 @@ UART initialized successfully!
 | **boot.S** | 啟動程式（boot loader），設定堆疊與清空 `.bss` 段後跳入 `main`。 |
 | **linker.ld** | 連結器腳本，定義程式在記憶體中的段落配置。 |
 | **gpio.c / gpio.h** | GPIO 控制與輔助函式，負責切換 GPIO14/15 至 ALT 模式（UART 腳位）。 |
-| **mini_uart.c** | mini UART（UART1）的驅動實作，使用 `AUX_MU_*` 暫存器。 |
+| **mini_uart.c / mini_uart.h** | mini UART（UART1）的驅動實作，使用 `AUX_MU_*` 暫存器。 |
 | **mini_uart_main.c** | 使用 mini UART 的示範主程式。 |
-| **uart.c** | PL011 full UART（UART0）的驅動實作，使用 `UART0_*` 暫存器。 |
+| **uart.c / uart.h** | PL011 full UART（UART0）的驅動實作，使用 `UART0_*` 暫存器。 |
 | **uart_main.c** | 使用 PL011 UART 的示範主程式。 |
 | **Makefile** | 建置與執行控制腳本，支援以下目標：<br>• `make mini_uart` / `make run_mini_uart`<br>• `make uart` / `make run_uart`<br>• `make clean` 清除輸出檔案 |
 

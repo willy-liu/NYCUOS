@@ -60,3 +60,12 @@ void mini_uart_flush_tx(void) {
         // Wait until TX empty
     }
 }
+
+void print_hex(unsigned int value) {
+    const char hex_chars[] = "0123456789ABCDEF";
+    mini_uart_puts("0x");
+    for (int i = 28; i >= 0; i -= 4) {
+        char hex_digit = hex_chars[(value >> i) & 0xF];
+        mini_uart_send(hex_digit);
+    }
+}
