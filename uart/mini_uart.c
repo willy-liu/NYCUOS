@@ -39,7 +39,7 @@ void mini_uart_send(char c) {
     *AUX_MU_IO_REG = c;
 }
 
-char mini_uart_recv(void) {
+char mini_uart_getc(void) {
     while (!(*AUX_MU_LSR_REG & 0x01)); // Wait until RX has data
     return *AUX_MU_IO_REG;
 }
@@ -48,5 +48,15 @@ void mini_uart_puts(const char *s) {
     while (*s) {
         if (*s == '\n') mini_uart_send('\r');
         mini_uart_send(*s++);
+    }
+}
+
+int mini_uart_rx_empty(void) {
+    return (*AUX_MU_LSR_REG & 0x01) == 0;
+}
+
+void mini_uart_flush_tx(void) {
+    while (!(*AUX_MU_LSR_REG & 0x20)) {
+        // Wait until TX empty
     }
 }

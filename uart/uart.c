@@ -32,7 +32,7 @@ void uart_send(char c) {
     *UART0_DR = c;
 }
 
-char uart_recv(void) {
+char uart_getc(void) {
     while (*UART0_FR & (1 << 4));   // RXFE = 1 表示空
     return *UART0_DR;
 }
@@ -41,5 +41,15 @@ void uart_puts(const char *s) {
     while (*s) {
         if (*s == '\n') uart_send('\r');
         uart_send(*s++);
+    }
+}
+
+int uart_rx_empty(void) {
+    return (*UART0_FR & (1 << 4)) != 0;
+}
+
+void uart_flush_tx(void) {
+    while (*UART0_FR & (1 << 3)) {
+        // BUSY=1 → still sending
     }
 }

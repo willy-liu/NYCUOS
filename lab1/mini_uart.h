@@ -3,7 +3,7 @@
 
 void mini_uart_init(void);
 void mini_uart_send(char c);
-char mini_uart_recv(void);
+char mini_uart_getc(void);
 void mini_uart_puts(const char *s);
 void print_hex(unsigned int value);
 

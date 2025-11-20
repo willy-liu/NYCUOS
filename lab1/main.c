@@ -20,7 +20,7 @@ void shell(void) {
     mini_uart_puts("# ");  // 提示符
 
     while (1) {
-        char c = mini_uart_recv();
+        char c = mini_uart_getc();
 
         // 處理 Enter
         if (c == '\r' || c == '\n') {

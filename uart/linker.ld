@@ -1,4 +1,6 @@
 /* link.ld — Raspberry Pi 3, AArch64, kernel8.img at 0x80000 */
+ENTRY(_start)
+
 SECTIONS {
     . = 0x80000;                /* set the start address where the linked image will be placed */
 

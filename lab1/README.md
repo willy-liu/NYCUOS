@@ -211,7 +211,7 @@ void mini_uart_send(char c) {
     *AUX_MU_IO_REG = c;
 }
 
-char mini_uart_recv(void) {
+char mini_uart_getc(void) {
     while (!(*AUX_MU_LSR_REG & 0x01)); // Wait until RX has data
     return *AUX_MU_IO_REG;
 }
@@ -281,7 +281,7 @@ void shell(void) {
     mini_uart_puts("# ");  // 提示符
 
     while (1) {
-        char c = mini_uart_recv();
+        char c = mini_uart_getc();
 
         // 處理 Enter
         if (c == '\r' || c == '\n') {
