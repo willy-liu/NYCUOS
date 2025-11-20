@@ -18,6 +18,31 @@ lab1/
 
 > **Note**: This lab reuses GPIO and Mini UART drivers from the [`uart/`](../uart) directory.
 
+## Implementation Details
+
+This lab fulfills the following requirements:
+
+1.  **Basic Initialization**:
+    -   **Goal**: Initialize the stack pointer and clear the BSS segment to ensure a clean C runtime environment.
+    -   **Implementation**: Implemented in `boot.S`. It sets `sp` to `_stack_top` and zeroes out memory between `_bss_start` and `_bss_end` before jumping to `main`.
+
+2.  **Mini UART**:
+    -   **Goal**: Enable serial communication with the host.
+    -   **Implementation**: Reused the driver from the `../uart` directory. It configures GPIO pins 14/15 to ALT5 and initializes the AUX peripheral.
+
+3.  **Simple Shell**:
+    -   **Goal**: Provide a command-line interface.
+    -   **Implementation**: Implemented in `main.c`. It reads characters from UART, buffers them, and parses commands like `help`, `hello`, `info`, and `reboot`.
+
+4.  **Mailbox**:
+    -   **Goal**: Query hardware information from the GPU (VideoCore IV).
+    -   **Implementation**: Implemented in `mailbox.c`. It constructs a message with tags (e.g., `GET_BOARD_REVISION`, `GET_ARM_MEMORY`) and writes the address to the Mailbox register.
+
+5.  **Reboot**:
+    -   **Goal**: Reset the Raspberry Pi 3.
+    -   **Implementation**: Implemented in `reboot.c` using the Watchdog Timer (PM_RSTC, PM_WDOG) to trigger a system reset.
+
+
 
 ## Prerequisites
 
