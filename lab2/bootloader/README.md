@@ -51,6 +51,17 @@ bootloader/
     -   **Goal**: Receive raw binary data through UART.
     -   **Implementation**: The bootloader waits for the kernel size (4 bytes), then reads the kernel content byte-by-byte into memory at `0x80000`, and finally jumps to it.
 
+    > **Alternative Implementation**:
+    > Instead of jumping to the kernel directly in `main.c`, you can return from `main` and handle the jump in `boot.S`.
+    >
+    > In `boot.S`:
+    > ```assembly
+    > bss_done:
+    >     bl main
+    >     mov x0, #0x80000
+    >     br x0
+    > ```
+
 3.  **Python Sender**:
     -   **Goal**: Send the kernel image from the host.
     -   **Implementation**: `send_kernel_serial.py` opens the serial port, sends the size, and then streams the kernel binary.
