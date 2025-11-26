@@ -27,7 +27,7 @@ void uart_init(void) {
     *UART0_CR = 0x301;             // 啟用 UART、TX、RX
 }
 
-void uart_send(char c) {
+void uart_putc(char c) {
     while (*UART0_FR & (1 << 5));   // TXFF = 1 表示滿
     *UART0_DR = c;
 }
@@ -39,8 +39,8 @@ char uart_getc(void) {
 
 void uart_puts(const char *s) {
     while (*s) {
-        if (*s == '\n') uart_send('\r');
-        uart_send(*s++);
+        if (*s == '\n') uart_putc('\r');
+        uart_putc(*s++);
     }
 }
 
@@ -68,6 +68,6 @@ void print_hex(unsigned int value) {
     const char hex_chars[] = "0123456789ABCDEF";
     uart_puts("0x");
     for (int i = 28; i >= 0; i -= 4) {
-        uart_send(hex_chars[(value >> i) & 0xF]);
+        uart_putc(hex_chars[(value >> i) & 0xF]);
     }
 }

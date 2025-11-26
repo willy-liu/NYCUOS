@@ -34,7 +34,7 @@ void mini_uart_init(void) {
     *AUX_MU_CNTL_REG = 3;       // Enable TX/RX
 }
 
-void mini_uart_send(char c) {
+void mini_uart_putc(char c) {
     while (!(*AUX_MU_LSR_REG & 0x20)); // Wait until TX ready
     *AUX_MU_IO_REG = c;
 }
@@ -46,8 +46,8 @@ char mini_uart_getc(void) {
 
 void mini_uart_puts(const char *s) {
     while (*s) {
-        if (*s == '\n') mini_uart_send('\r');
-        mini_uart_send(*s++);
+        if (*s == '\n') mini_uart_putc('\r');
+        mini_uart_putc(*s++);
     }
 }
 
@@ -76,6 +76,6 @@ void print_hex(unsigned int value) {
     mini_uart_puts("0x");
     for (int i = 28; i >= 0; i -= 4) {
         char hex_digit = hex_chars[(value >> i) & 0xF];
-        mini_uart_send(hex_digit);
+        mini_uart_putc(hex_digit);
     }
 }
