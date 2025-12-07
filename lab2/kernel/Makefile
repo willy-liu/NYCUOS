@@ -20,7 +20,7 @@ GPIO_C = ../../uart/gpio.c
 # =======================
 # Source / Object files
 # =======================
-OBJS = boot.o main.o uart.o gpio.o cpio.o
+OBJS = boot.o main.o uart.o gpio.o cpio.o simple_alloc.o
 
 # =======================
 # Build rules
@@ -43,6 +43,9 @@ gpio.o: $(GPIO_C) $(GPIO_H)
 
 cpio.o: cpio.c cpio.h $(UART_H) $(GPIO_H)
 	$(CC) $(CFLAGS) -c cpio.c -o $@
+
+simple_alloc.o: simple_alloc.c simple_alloc.h
+	$(CC) $(CFLAGS) -c simple_alloc.c -o $@
 
 # 連結
 kernel8.elf: $(OBJS) linker.ld
