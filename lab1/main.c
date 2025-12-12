@@ -86,7 +86,7 @@ void shell(void) {
         else {
             if (index < MAX_CMD_LEN - 1) {
                 buffer[index++] = c;
-                mini_uart_send(c);  // Echo 顯示
+                mini_uart_putc(c);  // Echo 顯示
             }
         }
     }
