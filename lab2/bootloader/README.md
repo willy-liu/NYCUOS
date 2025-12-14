@@ -45,7 +45,7 @@ bootloader/
 
 1.  **Config Kernel Loading Setting**:
     -   **Goal**: Load the actual kernel image at `0x80000` without overlapping with the bootloader.
-    -   **Implementation**: The bootloader is relocated to `0x60000` in `linker.ld`. On the SD card, `config.txt` specifies `kernel_address=0x60000` and `kernel=bootloader.img`.
+    -   **Implementation**: The bootloader is linked assuming it starts at `0x80000` but, once control is transferred to core 0, it copies itself down to `0x60000` so the kernel can still be received at `0x80000`. On the SD card, `config.txt` specifies `kernel_address=0x60000` and `kernel=bootloader.img`.
 
 2.  **UART Protocol**:
     -   **Goal**: Receive raw binary data through UART.

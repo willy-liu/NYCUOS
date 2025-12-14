@@ -1,5 +1,5 @@
 # =======================
-# Raspberry Pi 3 Bare-metal Makefile
+# Raspberry Pi 3 Bare-metal Makefile (Recommended)
 # =======================
 
 CROSS   = aarch64-linux-gnu
@@ -7,44 +7,44 @@ CC      = $(CROSS)-gcc
 LD      = $(CROSS)-ld
 OBJCOPY = $(CROSS)-objcopy
 
+# =======================
+# Compiler / Linker flags
+# =======================
 CFLAGS  = -Wall -O2 -ffreestanding -nostdlib
 CFLAGS += -I../../uart
+
 LDFLAGS = -T linker.ld
 
-UART_H = ../../uart/uart.h
-UART_C = ../../uart/uart.c
-
-GPIO_H = ../../uart/gpio.h
-GPIO_C = ../../uart/gpio.c
+# =======================
+# Source search paths
+# =======================
+VPATH = . ../../uart
 
 # =======================
-# Source / Object files
+# Objects
 # =======================
-OBJS = boot.o main.o uart.o gpio.o
+BOOT_OBJS   = boot.o
+KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o
+OBJS = $(BOOT_OBJS) $(KERNEL_OBJS)
 
 # =======================
 # Build rules
 # =======================
 all: bootloader.img
 
-# 組語
+# Assembly
 boot.o: boot.S
-	$(CC) $(CFLAGS) -c boot.S -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# C 原始碼
-main.o: main.c $(UART_H) $(GPIO_H)
-	$(CC) $(CFLAGS) -c main.c -o $@
+# Generic C rule (all .c -> .o)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-uart.o: $(UART_C) $(UART_H) $(GPIO_H)
-	$(CC) $(CFLAGS) -c $(UART_C) -o $@
-
-gpio.o: $(GPIO_C) $(GPIO_H)
-	$(CC) $(CFLAGS) -c $(GPIO_C) -o $@
-# 連結
+# Link
 bootloader.elf: $(OBJS) linker.ld
-	$(LD) $(LDFLAGS) -o $@ $(OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(BOOT_OBJS) $(KERNEL_OBJS)
 
-# 轉成 binary
+# Binary
 bootloader.img: bootloader.elf
 	$(OBJCOPY) -O binary $< $@
 
@@ -55,7 +55,7 @@ bootloader.img: bootloader.elf
 run: bootloader.img
 	qemu-system-aarch64 \
     -M raspi3b \
-    -kernel bootloader.elf \
+    -kernel bootloader.img \
     -serial pty \
 	-serial stdio \
     -display none
