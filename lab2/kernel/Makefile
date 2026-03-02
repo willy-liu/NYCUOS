@@ -24,7 +24,7 @@ VPATH = . ../../uart
 # Objects (split by role)
 # =======================
 BOOT_OBJS   = boot.o
-KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o
+KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o fdt.o
 
 OBJS = $(BOOT_OBJS) $(KERNEL_OBJS)
 
@@ -59,7 +59,8 @@ run: kernel8.img
 		-serial stdio \
 		-serial null \
 		-display none \
-		-initrd initramfs.cpio
+		-initrd initramfs.cpio \
+		-dtb bcm2710-rpi-3-b-plus.dtb
 
 clean:
 	rm -f *.o *.elf *.img

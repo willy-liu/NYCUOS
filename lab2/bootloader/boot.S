@@ -3,6 +3,9 @@
 
 _start:
 
+    // x0 = DTB base address（由 QEMU / RPi firmware 傳入）
+    mov x19, x0            // 保存 DTB 位址到 callee-saved register
+
     // 避免 qemu 多核心 啟動問題，只讓 core 0 執行，在 樹莓派 3B+ 上測試時加不加這段都一樣
     mrs x0, MPIDR_EL1
     and x0, x0, #0xFF
@@ -54,7 +57,7 @@ bss_clear:
     b bss_clear
 
 bss_done:
-    // 跳到 C 函式
+    mov x0, x19            // 將 DTB 位址作為 main() 的第一個參數
     bl main
 
 .secondary:

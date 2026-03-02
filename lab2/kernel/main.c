@@ -3,6 +3,7 @@
 #include "gpio.h"
 #include "cpio.h"
 #include "simple_alloc.h"
+#include "fdt.h"
 
 static void print_help(void) {
     uart_puts("Available commands:\n");
@@ -151,12 +152,57 @@ static void handle_alloc_command(const char *args) {
     uart_puts("\n");
 }
 
-int main() {
+/* ----------------------------------------------------------------
+ * Device-tree helpers: find initramfs address from /chosen node
+ * ---------------------------------------------------------------- */
+static int str_eq(const char *a, const char *b) {
+    while (*a && *b) {
+        if (*a != *b) return 0;
+        a++; b++;
+    }
+    return *a == *b;
+}
+
+static uintptr_t initramfs_addr = 0;
+
+static void initramfs_callback(const char *node_name, const char *prop_name,
+                                const void *data, uint32_t len)
+{
+    if (!str_eq(node_name, "chosen"))
+        return;
+
+    if (str_eq(prop_name, "linux,initrd-start")) {
+        if (len == 4) {
+            initramfs_addr = (uintptr_t)fdt_read_be32(data);
+        } else if (len == 8) {
+            /* 64-bit big-endian address */
+            uint32_t hi = fdt_read_be32(data);
+            uint32_t lo = fdt_read_be32((const uint8_t *)data + 4);
+            initramfs_addr = ((uintptr_t)hi << 32) | lo;
+        }
+    }
+}
+
+int main(void *dtb_addr) {
     gpio_init_uart();
     simple_alloc_init(NULL, 0);
     uart_puts("this is kernel cpio test!\n");
-    // cpio_set_base((void*)0x8000000); // qemu initramfs base address 0x8000000
-    cpio_set_base((void*)0x20000000); // raspi3b initramfs base address 0x20000000
+
+    /* Parse DTB to discover initramfs address dynamically */
+    fdt_init(dtb_addr);
+    fdt_traverse(initramfs_callback);
+
+    if (initramfs_addr) {
+        uart_puts("[fdt] initramfs found at: ");
+        print_hex((unsigned int)initramfs_addr);
+        uart_puts("\n");
+        cpio_set_base((void *)initramfs_addr);
+    } else {
+        uart_puts("[fdt] WARNING: initramfs not found in DTB, using default 0x8000000/0x2000000\n");
+        cpio_set_base((void *)0x8000000); // qemu default initramfs address
+        // cpio_set_base((void *)0x2000000); // Raspberry Pi 3 default initramfs address
+    }
+
     uart_puts("Listing all files in cpio archive:\n");
     cpio_list_all();
     char cmd[128];

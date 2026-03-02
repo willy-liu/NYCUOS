@@ -12,7 +12,7 @@ static unsigned int uart_get_u32(void)
     return (b0) | (b1 << 8) | (b2 << 16) | (b3 << 24);
 }
 
-int main(void) {
+int main(void *dtb_addr) {
     gpio_init_uart();
     uart_init();
 
@@ -48,12 +48,13 @@ int main(void) {
     // 收完再清一次 RX，避免多餘資料影響 kernel 開機（例如 Python 亂丟）
     uart_flush_rx();
 
-    // 3. 跳到 kernel entry
+    // 3. 跳到 kernel entry，並將 DTB 位址透過 x0 傳給 kernel
     uart_puts("bootloader: jumping to kernel...\r\n");
     uart_flush_tx();
 
-    void (*kernel_entry)(void) = (void *)KERNEL_LOAD_ADDR;
-    kernel_entry();   // never returns
+    typedef void (*kernel_entry_t)(void *dtb);
+    kernel_entry_t kernel_entry = (kernel_entry_t)KERNEL_LOAD_ADDR;
+    kernel_entry(dtb_addr);   // x0 = dtb_addr → kernel boot.S 會接到
 
     return 0; // never reached
 }

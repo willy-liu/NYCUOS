@@ -24,8 +24,8 @@ VPATH = . ../../uart
 # Objects
 # =======================
 BOOT_OBJS   = boot.o
-KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o
-OBJS = $(BOOT_OBJS) $(KERNEL_OBJS)
+BOOTLOADER_OBJS = main.o uart.o gpio.o
+OBJS = $(BOOT_OBJS) $(BOOTLOADER_OBJS)
 
 # =======================
 # Build rules
@@ -42,7 +42,7 @@ boot.o: boot.S
 
 # Link
 bootloader.elf: $(OBJS) linker.ld
-	$(LD) $(LDFLAGS) -o $@ $(BOOT_OBJS) $(KERNEL_OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(BOOT_OBJS) $(BOOTLOADER_OBJS)
 
 # Binary
 bootloader.img: bootloader.elf
