@@ -11,14 +11,8 @@ OBJCOPY = $(CROSS)-objcopy
 # Compiler / Linker flags
 # =======================
 CFLAGS  = -Wall -O2 -ffreestanding -nostdlib
-CFLAGS += -I../../uart
 
 LDFLAGS = -T linker.ld
-
-# =======================
-# Source search paths
-# =======================
-VPATH = . ../../uart
 
 # =======================
 # Objects
