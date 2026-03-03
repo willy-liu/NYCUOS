@@ -4,10 +4,15 @@
 #include "cpio.h"
 #include "simple_alloc.h"
 #include "fdt.h"
+#include "mailbox.h"
+#include "reboot.h"
 
 static void print_help(void) {
     uart_puts("Available commands:\n");
     uart_puts("  help            Show this message\n");
+    uart_puts("  hello           Print Hello World!\n");
+    uart_puts("  info            Print system information (board revision, ARM memory)\n");
+    uart_puts("  reboot          Reboot the device\n");
     uart_puts("  ls              List files inside initramfs\n");
     uart_puts("  cat <path>      Print file content from initramfs\n");
     uart_puts("  alloc [bytes] [string]   Allocate a char* and print it\n");
@@ -238,6 +243,37 @@ int main(void *dtb_addr) {
         const char *args = NULL;
         if (match_command(p, "help", &args)) {
             print_help();
+            continue;
+        }
+        if (match_command(p, "hello", &args)) {
+            uart_puts("Hello World!\n");
+            continue;
+        }
+        if (match_command(p, "info", &args)) {
+            unsigned int mailbox[8] __attribute__((aligned(16)));
+
+            if (get_board_revision(mailbox)) {
+                uart_puts("Board Revision: ");
+                print_hex(mailbox[5]);
+                uart_puts("\n");
+            } else {
+                uart_puts("Failed to get board revision.\n");
+            }
+
+            if (get_arm_memory_info(mailbox)) {
+                uart_puts("ARM Memory Info:\n");
+                uart_puts("  Base: ");
+                print_hex(mailbox[5]);
+                uart_puts("\n  Size: ");
+                print_hex(mailbox[6]);
+                uart_puts("\n");
+            } else {
+                uart_puts("Failed to get ARM memory info.\n");
+            }
+            continue;
+        }
+        if (match_command(p, "reboot", &args)) {
+            reset(10);
             continue;
         }
         if (match_command(p, "ls", &args)) {

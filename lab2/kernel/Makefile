@@ -18,7 +18,7 @@ LDFLAGS = -T linker.ld
 # Objects (split by role)
 # =======================
 BOOT_OBJS   = boot.o
-KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o fdt.o
+KERNEL_OBJS = main.o uart.o gpio.o cpio.o simple_alloc.o fdt.o mailbox.o reboot.o
 
 OBJS = $(BOOT_OBJS) $(KERNEL_OBJS)
 
